@@ -1,31 +1,27 @@
 from django.db import models
 
 class BioSample(models.Model):
-    accession = models.CharField(max_length=50, unique=True)
-    sample_type = models.CharField(max_length=100)
-    organism = models.CharField(max_length=100)
-    collected_by = models.CharField(max_length=100, null=True, blank=True)
-    collection_date = models.DateField(null=True, blank=True)
+    sample_id = models.CharField(max_length=100, unique=True)
+    organism = models.CharField(max_length=255)
+    collection_date = models.DateField()
+    source = models.CharField(max_length=255)
 
     def __str__(self):
-        return self.accession
+        return self.sample_id
 
 
 class MetadataField(models.Model):
-    name = models.CharField(max_length=100)
-    data_type = models.CharField(
-        max_length=20,
-        choices=[("string", "string"), ("int", "int"), ("float", "float"), ("date", "date")]
-    )
+    name = models.CharField(max_length=100, unique=True)
+    required = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
 
 
 class MetadataValue(models.Model):
-    sample = models.ForeignKey(BioSample, on_delete=models.CASCADE, related_name="metadata")
+    biosample = models.ForeignKey(BioSample, on_delete=models.CASCADE)
     field = models.ForeignKey(MetadataField, on_delete=models.CASCADE)
-    value = models.CharField(max_length=255)
+    value = models.TextField()
 
-    def __str__(self):
-        return f"{self.sample.accession} - {self.field.name}"
+    class Meta:
+        unique_together = ("biosample", "field")

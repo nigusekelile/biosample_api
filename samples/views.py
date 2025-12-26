@@ -3,7 +3,7 @@ from .models import BioSample, MetadataField, MetadataValue
 from .serializers import (
     BioSampleSerializer,
     MetadataFieldSerializer,
-    MetadataValueSerializer
+    MetadataValueSerializer,
 )
 
 class BioSampleViewSet(viewsets.ModelViewSet):
